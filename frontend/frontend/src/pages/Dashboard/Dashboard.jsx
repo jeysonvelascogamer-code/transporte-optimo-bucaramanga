@@ -13,6 +13,7 @@ const Dashboard = () => {
   const [selectedRoute, setSelectedRoute] = useState(null);
   const [searchQuery, setSearchQuery] = useState('');
   const [fontSize, setFontSize] = useState(14);
+  const [isDarkMode, setIsDarkMode] = useState(true);
 
   useEffect(() => {
     document.documentElement.style.setProperty('--base-font-size', `${fontSize}px`);
@@ -41,7 +42,7 @@ const Dashboard = () => {
   };
 
   return (
-    <div className="dashboard-layout">
+    <div className={`dashboard-layout ${isDarkMode ? 'dark-theme' : 'light-theme'}`}>
       <aside className="sidebar">
         <div className="sidebar-header">
           <div className="logo-small"><Bus size={24} color="white" /></div>
@@ -62,11 +63,11 @@ const Dashboard = () => {
           <div className="header-left">
             <div className="search-bar">
               <Search size={18} className="search-icon" />
-              <input type="text" placeholder="Buscar ruta o destino..." value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} />
+              <input type="text" placeholder="Buscar ruta..." value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} />
             </div>
           </div>
           <div className="user-actions">
-            <button className="action-btn" onClick={() => setActivePanel(activePanel === 'notif' ? null : 'notif')}><Bell size={20} /></button>
+            <button className="action-btn bell-btn" onClick={() => setActivePanel(activePanel === 'notif' ? null : 'notif')}><Bell size={20} /></button>
             <div className="user-profile" onClick={() => setActivePanel(activePanel === 'user' ? null : 'user')}>
               <span>J. Bermudez</span>
               <div className="avatar"><User size={20} color="white" /></div>
@@ -75,13 +76,13 @@ const Dashboard = () => {
             <AnimatePresence>
               {activePanel === 'notif' && (
                 <motion.div variants={menuVariants} initial="hidden" animate="visible" exit="hidden" className="dropdown-panel">
-                  <div className="panel-header" style={{ marginBottom: '15px' }}><h4>Alertas</h4></div>
+                  <div className="dropdown-header"><h4>Alertas</h4><button className="close-btn" onClick={() => setActivePanel(null)}><X size={16} /></button></div>
                   <div className="notif-list">
                     {notifications.map(n => (
                       <div key={n.id} className={`notif-item ${n.type}`}>
                         <div style={{ display: 'flex', gap: '10px' }}>
                           {n.icon}
-                          <div><strong>{n.title}</strong><p style={{ margin: '3px 0', fontSize: '12px', opacity: 0.8 }}>{n.desc}</p></div>
+                          <div><strong>{n.title}</strong><p style={{ margin: '3px 0', fontSize: '12px' }}>{n.desc}</p></div>
                         </div>
                       </div>
                     ))}
@@ -94,7 +95,7 @@ const Dashboard = () => {
                   <button className="nav-item"><User size={18} /> Perfil</button>
                   <button className="nav-item" onClick={() => {setActiveTab('settings'); setActivePanel(null)}}><Settings size={18} /> Ajustes</button>
                   <hr style={{ opacity: 0.1, margin: '10px 0' }} />
-                  <button className="logout-btn" onClick={handleLogout}><LogOut size={18} /> Salir</button>
+                  <button className="logout-btn" onClick={handleLogout} style={{ border: 'none' }}><LogOut size={18} /> Salir</button>
                 </motion.div>
               )}
             </AnimatePresence>
@@ -105,7 +106,7 @@ const Dashboard = () => {
           <AnimatePresence>
             {activeTab === 'routes' && (
               <motion.div initial={{ x: -100, opacity: 0 }} animate={{ x: 0, opacity: 1 }} exit={{ x: -100, opacity: 0 }} className="side-panel">
-                <div className="panel-header"><h4>Rutas ({filteredRoutes.length})</h4><button className="close-btn" onClick={() => setActiveTab('map')}><X size={18} /></button></div>
+                <div className="panel-header"><h4>Rutas Metrolínea</h4><button className="close-btn" onClick={() => setActiveTab('map')}><X size={18} /></button></div>
                 <div className="route-list">
                   {filteredRoutes.map(r => (
                     <div key={r.id} className="route-item" onClick={() => setSelectedRoute(r)}>
@@ -121,11 +122,13 @@ const Dashboard = () => {
               <motion.div initial={{ x: -100, opacity: 0 }} animate={{ x: 0, opacity: 1 }} exit={{ x: -100, opacity: 0 }} className="side-panel">
                 <div className="panel-header"><h4>Ajustes</h4><button className="close-btn" onClick={() => setActiveTab('map')}><X size={18} /></button></div>
                 <div className="settings-section">
-                  <label><Type size={18} /> Tamaño de letra</label>
-                  <input type="range" min="12" max="20" value={fontSize} onChange={(e) => setFontSize(e.target.value)} />
-                  <div style={{ marginTop: '20px' }}>
-                    <label><Moon size={18} /> Modo Nocturno</label>
-                    <button className="action-btn" style={{ width: '100%', marginTop: '10px' }}>Activado</button>
+                  <label><Type size={18} /> Tamaño de letra: {fontSize}px</label>
+                  <input type="range" min="12" max="22" value={fontSize} onChange={(e) => setFontSize(parseInt(e.target.value))} />
+                  <div style={{ marginTop: '30px' }}>
+                    <label>{isDarkMode ? <Moon size={18} /> : <Sun size={18} />} Tema Visual</label>
+                    <button className="action-btn" style={{ width: '100%', marginTop: '10px', background: isDarkMode ? 'var(--primary)' : '#eee', color: isDarkMode ? 'white' : 'black' }} onClick={() => setIsDarkMode(!isDarkMode)}>
+                      {isDarkMode ? 'Modo Oscuro' : 'Modo Claro'}
+                    </button>
                   </div>
                 </div>
               </motion.div>
