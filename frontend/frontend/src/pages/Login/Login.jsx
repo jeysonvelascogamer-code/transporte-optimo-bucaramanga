@@ -66,7 +66,13 @@ const Login = () => {
           </div>
 
           <div className="login-options">
-            <a href="#forgot" className="forgot-link">¿Olvidaste tu contraseña?</a>
+            <button 
+              onClick={() => navigate('/forgot-password')} 
+              className="forgot-link"
+              style={{ background: 'none', border: 'none', cursor: 'pointer', padding: 0 }}
+            >
+              ¿Olvidaste tu contraseña?
+            </button>
           </div>
 
           <button type="submit" className="btn-primary login-btn">
