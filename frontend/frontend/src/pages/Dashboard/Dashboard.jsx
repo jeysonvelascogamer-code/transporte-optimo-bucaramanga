@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { MapContainer, TileLayer, Marker, Popup, Polyline } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
-import { Search, Bell, User, Bus, Map as MapIcon, Settings, LogOut, Menu, X, Info, AlertTriangle, Moon, Sun, Type, ChevronRight } from 'lucide-react';
+import { Search, Bell, User, Bus, Map as MapIcon, Settings, LogOut, Menu, X, Info, AlertTriangle, Moon, Sun, Type, ChevronRight, Camera, Mail, Lock } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import './Dashboard.css';
@@ -33,7 +33,7 @@ const Dashboard = () => {
   ];
 
   const handleLogout = () => {
-    if(window.confirm('¿Cerrar sesión?')) navigate('/');
+    if(window.confirm('¿Deseas cerrar sesión y volver al inicio?')) navigate('/');
   };
 
   const menuVariants = {
@@ -51,6 +51,7 @@ const Dashboard = () => {
         <nav className="sidebar-nav">
           <button className={`nav-item ${activeTab === 'map' ? 'active' : ''}`} onClick={() => setActiveTab('map')}><MapIcon size={20} /> <span>Mapa</span></button>
           <button className={`nav-item ${activeTab === 'routes' ? 'active' : ''}`} onClick={() => setActiveTab(activeTab === 'routes' ? 'map' : 'routes')}><Bus size={20} /> <span>Rutas</span></button>
+          <button className={`nav-item ${activeTab === 'profile' ? 'active' : ''}`} onClick={() => setActiveTab(activeTab === 'profile' ? 'map' : 'profile')}><User size={20} /> <span>Mi Perfil</span></button>
           <button className={`nav-item ${activeTab === 'settings' ? 'active' : ''}`} onClick={() => setActiveTab(activeTab === 'settings' ? 'map' : 'settings')}><Settings size={20} /> <span>Ajustes</span></button>
         </nav>
         <div className="sidebar-footer">
@@ -85,7 +86,7 @@ const Dashboard = () => {
               <Bell size={20} />
               {notifications.length > 0 && <span className="notif-badge"></span>}
             </button>
-            <div className="user-profile" onClick={() => setActivePanel(activePanel === 'user' ? null : 'user')}>
+            <div className="user-profile" onClick={() => setActiveTab('profile')}>
               <span>J. Bermudez</span>
               <div className="avatar"><User size={20} color="white" /></div>
             </div>
@@ -106,15 +107,6 @@ const Dashboard = () => {
                   </div>
                 </motion.div>
               )}
-
-              {activePanel === 'user' && (
-                <motion.div variants={menuVariants} initial="hidden" animate="visible" exit="hidden" className="dropdown-panel user-dropdown">
-                  <button className="nav-item"><User size={18} /> Mi Perfil</button>
-                  <button className="nav-item" onClick={() => {setActiveTab('settings'); setActivePanel(null)}}><Settings size={18} /> Ajustes</button>
-                  <hr style={{ opacity: 0.1, margin: '10px 0' }} />
-                  <button className="logout-btn secondary" onClick={handleLogout}><LogOut size={18} /> Salir</button>
-                </motion.div>
-              )}
             </AnimatePresence>
           </div>
         </header>
@@ -131,6 +123,28 @@ const Dashboard = () => {
                       <div><strong>{r.name}</strong><p style={{ margin: '5px 0 0', fontSize: '12px', opacity: 0.6 }}>{r.price}</p></div>
                     </div>
                   ))}
+                </div>
+              </motion.div>
+            )}
+
+            {activeTab === 'profile' && (
+              <motion.div initial={{ x: -100, opacity: 0 }} animate={{ x: 0, opacity: 1 }} exit={{ x: -100, opacity: 0 }} className="side-panel">
+                <div className="panel-header"><h4>Mi Perfil</h4><button className="close-btn" onClick={() => setActiveTab('map')}><X size={18} /></button></div>
+                <div className="profile-section">
+                  <div className="profile-avatar-edit">
+                    <div className="big-avatar"><User size={40} color="white" /></div>
+                    <button className="camera-btn"><Camera size={16} /></button>
+                  </div>
+                  <div className="input-group">
+                    <label><Mail size={16} /> Correo Electrónico</label>
+                    <input type="email" defaultValue="j.bermudez@transporte.com" />
+                  </div>
+                  <div className="input-group">
+                    <label><Lock size={16} /> Nueva Contraseña</label>
+                    <input type="password" placeholder="********" />
+                  </div>
+                  <button className="action-btn" style={{ width: '100%', marginTop: '20px', background: 'var(--primary)', color: 'white' }}>Guardar Cambios</button>
+                  <button onClick={handleLogout} className="logout-btn" style={{ marginTop: '20px' }}><LogOut size={18} /> Cerrar Sesión</button>
                 </div>
               </motion.div>
             )}
