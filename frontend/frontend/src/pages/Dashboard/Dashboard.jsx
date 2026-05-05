@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { MapContainer, TileLayer, Marker, Popup, Polyline, useMap } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 import L from 'leaflet';
@@ -16,11 +16,13 @@ L.Icon.Default.mergeOptions({
 });
 
 // Componente para manejar el centrado del mapa
-const MapController = ({ center }) => {
+const MapController = ({ center, isTracking }) => {
   const map = useMap();
   useEffect(() => {
-    if (center) map.flyTo(center, 15);
-  }, [center, map]);
+    if (center && isTracking) {
+      map.flyTo(center, 16, { animate: true, duration: 1.5 });
+    }
+  }, [center, isTracking, map]);
   return null;
 };
 
@@ -34,28 +36,50 @@ const Dashboard = () => {
   const [isDarkMode, setIsDarkMode] = useState(true);
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
   const [userLocation, setUserLocation] = useState(null);
+  const [isTracking, setIsTracking] = useState(false);
+  const watchId = useRef(null);
 
   useEffect(() => {
     document.documentElement.style.setProperty('--base-font-size', `${fontSize}px`);
   }, [fontSize]);
+
+  // Limpiar el seguimiento al desmontar el componente
+  useEffect(() => {
+    return () => {
+      if (watchId.current) navigator.geolocation.clearWatch(watchId.current);
+    };
+  }, []);
 
   const toggleSidebar = () => {
     if (!isSidebarCollapsed) setActiveTab('map');
     setIsSidebarCollapsed(!isSidebarCollapsed);
   };
 
-  const handleLocate = () => {
+  const handleLocateToggle = () => {
     if (!navigator.geolocation) {
       alert('Tu navegador no soporta geolocalización');
       return;
     }
-    navigator.geolocation.getCurrentPosition(
-      (position) => {
-        const { latitude, longitude } = position.coords;
-        setUserLocation([latitude, longitude]);
-      },
-      () => alert('No se pudo obtener tu ubicación. Verifica los permisos.')
-    );
+
+    if (isTracking) {
+      // Detener seguimiento
+      if (watchId.current) navigator.geolocation.clearWatch(watchId.current);
+      setIsTracking(false);
+    } else {
+      // Iniciar seguimiento constante
+      setIsTracking(true);
+      watchId.current = navigator.geolocation.watchPosition(
+        (position) => {
+          const { latitude, longitude } = position.coords;
+          setUserLocation([latitude, longitude]);
+        },
+        () => {
+          alert('Error al obtener ubicación en tiempo real.');
+          setIsTracking(false);
+        },
+        { enableHighAccuracy: true, distanceFilter: 5 } // Actualizar cada 5 metros
+      );
+    }
   };
 
   const routes = [
@@ -199,15 +223,15 @@ const Dashboard = () => {
           </AnimatePresence>
 
           <div className="map-wrapper">
-            <button className="locate-btn" onClick={handleLocate} title="Mi Ubicación">
+            <button className={`locate-btn ${isTracking ? 'tracking' : ''}`} onClick={handleLocateToggle} title={isTracking ? "Detener Seguimiento" : "Iniciar Seguimiento"}>
               <Navigation size={20} />
             </button>
             <MapContainer center={[7.1193, -73.1227]} zoom={13} className="leaflet-map">
               <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
-              <MapController center={userLocation} />
+              <MapController center={userLocation} isTracking={isTracking} />
               {userLocation && (
                 <Marker position={userLocation}>
-                  <Popup>Estás aquí</Popup>
+                  <Popup>Estás aquí (Seguimiento activo)</Popup>
                 </Marker>
               )}
               {filteredRoutes.map(route => (
