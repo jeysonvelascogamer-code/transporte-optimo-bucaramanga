@@ -163,37 +163,84 @@ body, html {
 .leaflet-map { width: 100%; height: 100%; }
 
 /* SIDE PANEL (Listas/Ajustes) */
-.side-panel {
-  width: 300px;
-  background: rgba(15, 23, 42, 0.95);
-  border-right: 1px solid var(--border);
-  padding: 20px;
-  z-index: 50;
-  overflow-y: auto;
-}
-
-/* RESPONSIVE: CELULAR */
-@media (max-width: 768px) {
-  .sidebar {
-    position: fixed; left: -220px; height: 100vh; z-index: 200;
-  }
-  .sidebar.open { left: 0; }
-
-  .user-profile span { display: none; }
-  .search-bar { max-width: 150px; }
-  
-  .side-panel {
-    position: absolute; width: 100%; height: 100%;
-  }
-
-  .top-header { padding: 0 10px; gap: 8px; }
-}
-
+/* BOTONES DE CONTROL Y ESTILOS FALTANTES */
 .menu-toggle {
-  background: none; border: none; color: white; cursor: pointer;
   display: none;
+  background: rgba(255,255,255,0.05);
+  border: 1px solid var(--border);
+  color: white;
+  padding: 8px;
+  border-radius: 8px;
+  cursor: pointer;
 }
 
+.close-menu {
+  background: none;
+  border: none;
+  color: var(--text-muted);
+  cursor: pointer;
+  padding: 5px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: 0.2s;
+}
+
+.close-menu:hover { color: white; }
+
+.logout-btn {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: #ff4444;
+  background: rgba(255, 68, 68, 0.1);
+  border: 1px solid rgba(255, 68, 68, 0.2);
+  padding: 12px;
+  border-radius: 10px;
+  cursor: pointer;
+  font-weight: 600;
+  width: 100%;
+  transition: 0.3s;
+}
+
+.logout-btn:hover {
+  background: #ff4444;
+  color: white;
+}
+
+/* PANELES LATERALES (Z-INDEX ALTO) */
+.side-panel {
+  width: 320px;
+  min-width: 320px;
+  background: var(--bg-dark);
+  border-right: 1px solid var(--border);
+  padding: 24px;
+  z-index: 500; /* Asegura que esté frente al mapa */
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  box-shadow: 10px 0 30px rgba(0,0,0,0.5);
+}
+
+.panel-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+
+.panel-header h4 { margin: 0; font-size: 1.1rem; }
+
+/* AJUSTES DE RESPONSIVIDAD PARA CAPAS */
 @media (max-width: 1024px) {
   .menu-toggle { display: block; }
+  
+  .side-panel {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1000; /* Prioridad máxima en móvil */
+  }
 }

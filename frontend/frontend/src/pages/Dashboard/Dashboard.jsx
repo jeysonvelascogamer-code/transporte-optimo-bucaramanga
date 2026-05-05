@@ -86,7 +86,10 @@ const Dashboard = () => {
           <AnimatePresence mode='wait'>
             {activeTab === 'routes' && (
               <motion.div initial={{ x: -20, opacity: 0 }} animate={{ x: 0, opacity: 1 }} exit={{ x: -20, opacity: 0 }} className="side-panel glass">
-                <h4>Rutas de Metrolínea</h4>
+                <div className="panel-header">
+                  <h4>Rutas Metrolínea</h4>
+                  <button className="close-menu" onClick={() => setActiveTab('map')}><X size={20} /></button>
+                </div>
                 <div className="route-list">
                   {routes.map(r => (
                     <div key={r.id} className="route-item" onClick={() => { setSelectedRoute(r); setActiveTab('map'); }}>
@@ -100,7 +103,10 @@ const Dashboard = () => {
 
             {activeTab === 'alerts' && (
               <motion.div initial={{ x: -20, opacity: 0 }} animate={{ x: 0, opacity: 1 }} exit={{ x: -20, opacity: 0 }} className="side-panel glass">
-                <h4>Alertas en Tiempo Real</h4>
+                <div className="panel-header">
+                  <h4>Alertas</h4>
+                  <button className="close-menu" onClick={() => setActiveTab('map')}><X size={20} /></button>
+                </div>
                 <div className="notification-list">
                   {notifications.map(n => (
                     <div key={n.id} className={`notif-item ${n.type}`}>
@@ -113,7 +119,10 @@ const Dashboard = () => {
 
             {activeTab === 'settings' && (
               <motion.div initial={{ x: -20, opacity: 0 }} animate={{ x: 0, opacity: 1 }} exit={{ x: -20, opacity: 0 }} className="side-panel glass">
-                <h4>Configuración</h4>
+                <div className="panel-header">
+                  <h4>Configuración</h4>
+                  <button className="close-menu" onClick={() => setActiveTab('map')}><X size={20} /></button>
+                </div>
                 <div className="settings-group">
                   <label><Type size={18} /> Tamaño de Letra</label>
                   <input type="range" min="12" max="24" value={fontSize} onChange={(e) => setFontSize(e.target.value)} />
