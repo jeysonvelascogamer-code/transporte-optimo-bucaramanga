@@ -7,8 +7,8 @@
   --text-main: #f8fafc;
   --text-muted: #94a3b8;
   --border: rgba(255, 255, 255, 0.1);
-  --glass-bg: rgba(30, 41, 59, 0.85);
-  --base-font-size: 14px; /* DINÁMICO */
+  --glass-bg: rgba(30, 41, 59, 0.9);
+  --base-font-size: 14px;
 }
 
 .light-theme {
@@ -16,27 +16,20 @@
   --text-main: #0f172a;
   --text-muted: #64748b;
   --border: rgba(0, 0, 0, 0.1);
-  --glass-bg: rgba(255, 255, 255, 0.9);
+  --glass-bg: rgba(255, 255, 255, 0.95);
 }
 
 body, html { 
-  margin: 0; padding: 0; 
-  font-family: 'Inter', sans-serif; 
-  background: var(--bg-dark); 
-  overflow: hidden; 
-  height: 100vh; 
-  font-size: var(--base-font-size); /* APLICA A TODO */
+  margin: 0; padding: 0; font-family: 'Inter', sans-serif; background: var(--bg-dark); 
+  overflow: hidden; height: 100vh; font-size: var(--base-font-size);
 }
 
-/* ==========================================================
-   2. ESTRUCTURA BASE (LAYOUT)
-   ========================================================== */
-.dashboard-layout { display: flex; height: 100vh; width: 100vw; transition: background 0.3s ease; }
+.dashboard-layout { display: flex; height: 100vh; width: 100vw; transition: background 0.3s; }
 .main-content { flex: 1; display: flex; flex-direction: column; background: var(--bg-dark); position: relative; }
 .content-container { flex: 1; display: flex; overflow: hidden; position: relative; }
 
 /* ==========================================================
-   3. BARRA LATERAL (SIDEBAR)
+   2. BARRA LATERAL (SIDEBAR)
    ========================================================== */
 .sidebar {
   width: 240px; min-width: 240px; background: var(--bg-dark); border-right: 1px solid var(--border);
@@ -52,74 +45,54 @@ body, html {
 }
 .nav-item.active, .nav-item:hover { background: rgba(0, 168, 89, 0.1); color: var(--primary); }
 
+/* BOTÓN CERRAR SESIÓN REFINADO */
+.logout-btn {
+  display: flex; align-items: center; gap: 10px; color: #ff4444; padding: 12px;
+  background: rgba(255, 68, 68, 0.08); border: 1px solid rgba(255, 68, 68, 0.2);
+  border-radius: 12px; cursor: pointer; font-weight: 600; width: 100%; transition: 0.3s;
+}
+.logout-btn:hover { background: #ff4444; color: white; border-color: #ff4444; }
+.logout-btn.secondary { background: none; border-color: transparent; }
+.logout-btn.secondary:hover { background: rgba(255, 68, 68, 0.1); color: #ff4444; border-color: rgba(255, 68, 68, 0.2); }
+
 /* ==========================================================
-   4. CABECERA SUPERIOR (TOP HEADER)
+   3. CABECERA SUPERIOR Y BUSCADOR
    ========================================================== */
-.top-header { 
-  height: 70px; display: flex; align-items: center; justify-content: space-between; 
-  padding: 0 24px; border-bottom: 1px solid var(--border); background: var(--bg-dark); 
-}
-.search-bar { position: relative; width: 400px; display: flex; align-items: center; }
+.top-header { height: 70px; display: flex; align-items: center; justify-content: space-between; padding: 0 24px; border-bottom: 1px solid var(--border); }
+.search-bar { position: relative; width: 400px; }
 .search-bar input {
-  width: 100%; height: 42px; background: rgba(128,128,128,0.05); border: 1px solid var(--border);
-  border-radius: 12px; padding-left: 45px; color: var(--text-main); outline: none; font-size: 0.9rem;
+  width: 100%; height: 42px; background: rgba(128,128,128,0.08); border: 1px solid var(--border);
+  border-radius: 12px; padding-left: 45px; color: var(--text-main); outline: none;
 }
-.search-icon { position: absolute; left: 15px; color: var(--text-muted); }
+.search-icon { position: absolute; left: 15px; top: 12px; color: var(--text-muted); }
+
+/* SUGERENCIAS DE BÚSQUEDA */
+.search-suggestions {
+  position: absolute; top: 50px; left: 0; width: 100%; z-index: 5000;
+  border: 1px solid var(--border); border-radius: 12px; padding: 8px;
+  box-shadow: 0 10px 40px rgba(0,0,0,0.5); overflow: hidden;
+}
+.suggestion-item {
+  display: flex; align-items: center; gap: 10px; padding: 12px;
+  border-radius: 8px; cursor: pointer; transition: 0.2s; color: var(--text-main);
+}
+.suggestion-item:hover { background: rgba(0, 168, 89, 0.1); color: var(--primary); }
 
 .user-actions { display: flex; align-items: center; gap: 15px; position: relative; }
-.action-btn {
-  background: rgba(128,128,128,0.1); border: 1px solid var(--border); color: var(--text-main);
-  padding: 10px; border-radius: 12px; cursor: pointer; display: flex;
-}
+.action-btn { background: rgba(128,128,128,0.1); border: 1px solid var(--border); color: var(--text-main); padding: 10px; border-radius: 12px; cursor: pointer; }
 .bell-btn { background: rgba(0, 168, 89, 0.1); color: var(--primary); border-color: rgba(0, 168, 89, 0.2); }
 
-.user-profile {
-  display: flex; align-items: center; gap: 12px; padding: 6px 12px;
-  background: rgba(128,128,128,0.1); border-radius: 14px; border: 1px solid var(--border);
-  cursor: pointer; white-space: nowrap;
-}
+.user-profile { display: flex; align-items: center; gap: 12px; padding: 6px 12px; background: rgba(128,128,128,0.1); border-radius: 14px; border: 1px solid var(--border); cursor: pointer; white-space: nowrap; }
 .avatar { width: 32px; height: 32px; background: var(--primary); border-radius: 8px; display: flex; align-items: center; justify-content: center; }
 
 /* ==========================================================
-   5. PANELES DE DATOS (SIDE PANELS)
+   4. PANELES Y DETALLES
    ========================================================== */
-.side-panel {
-  width: 340px; min-width: 340px; background: var(--bg-dark); border-right: 1px solid var(--border);
-  padding: 24px; z-index: 500; overflow-y: auto;
-}
+.side-panel { width: 340px; min-width: 340px; background: var(--bg-dark); border-right: 1px solid var(--border); padding: 24px; z-index: 500; overflow-y: auto; }
+.panel-header, .detail-header, .dropdown-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; width: 100%; }
 
-/* ENCABEZADOS DE PANEL: FORZANDO ALINEACIÓN X */
-.panel-header, .detail-header, .dropdown-header {
-  display: flex !important;
-  flex-direction: row !important;
-  align-items: center !important;
-  justify-content: space-between !important;
-  margin-bottom: 20px;
-  width: 100%;
-}
-.panel-header h4, .detail-header h3 { margin: 0; white-space: nowrap; }
-
-.route-item {
-  display: flex; align-items: center; gap: 15px; padding: 15px;
-  background: rgba(128,128,128,0.05); border: 1px solid var(--border);
-  border-radius: 16px; cursor: pointer; transition: 0.3s; margin-bottom: 12px;
-}
+.route-item { display: flex; align-items: center; gap: 15px; padding: 15px; background: rgba(128,128,128,0.05); border: 1px solid var(--border); border-radius: 16px; cursor: pointer; transition: 0.3s; margin-bottom: 12px; }
 .route-item:hover { background: rgba(0, 168, 89, 0.05); border-color: var(--primary); }
-
-/* ==========================================================
-   6. COMPONENTES DEL MAPA
-   ========================================================== */
-.map-wrapper { flex: 1; height: 100%; position: relative; z-index: 1; }
-.leaflet-map { width: 100%; height: 100%; }
-
-/* ==========================================================
-   7. ELEMENTOS FLOTANTES
-   ========================================================== */
-.dropdown-panel {
-  position: absolute; top: 65px; right: 0; width: 320px; background: var(--glass-bg);
-  border: 1px solid var(--border); border-radius: 20px; padding: 20px; z-index: 5000;
-  box-shadow: 0 20px 60px rgba(0,0,0,0.5); backdrop-filter: blur(15px); color: var(--text-main);
-}
 
 .route-detail-panel {
   position: absolute; bottom: 30px; left: 50%; transform: translateX(-50%);
@@ -128,11 +101,17 @@ body, html {
   box-shadow: 0 30px 70px rgba(0,0,0,0.5);
 }
 
-.close-btn { 
-  background: rgba(128,128,128,0.1); border: none; color: var(--text-main);
-  padding: 8px; border-radius: 10px; cursor: pointer; display: flex; flex-shrink: 0;
-}
+/* ESTADÍSTICAS REFINADAS */
+.stat { background: rgba(128,128,128,0.05); padding: 12px; border-radius: 14px; flex: 1; text-align: center; }
+.stat span { font-size: 10px; color: var(--text-muted); display: block; margin-bottom: 5px; text-transform: uppercase; letter-spacing: 0.5px; }
+.stat strong { color: var(--primary); font-size: 15px; }
+
+.dropdown-panel { position: absolute; top: 65px; right: 0; width: 320px; background: var(--glass-bg); border: 1px solid var(--border); border-radius: 20px; padding: 20px; z-index: 5000; box-shadow: 0 20px 60px rgba(0,0,0,0.5); backdrop-filter: blur(15px); }
+.close-btn { background: rgba(128,128,128,0.1); border: none; color: var(--text-main); padding: 8px; border-radius: 10px; cursor: pointer; }
 .close-btn:hover { background: #ff4444; color: white; }
 
-.stat { background: rgba(128,128,128,0.05); padding: 10px; border-radius: 12px; flex: 1; text-align: center; }
-.notif-item { padding: 12px; border-radius: 14px; margin-bottom: 8px; background: rgba(128,128,128,0.05); border: 1px solid var(--border); }
+/* ==========================================================
+   5. MAPA
+   ========================================================== */
+.map-wrapper { flex: 1; height: 100%; position: relative; z-index: 1; }
+.leaflet-map { width: 100%; height: 100%; }

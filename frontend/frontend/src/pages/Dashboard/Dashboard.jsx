@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { MapContainer, TileLayer, Marker, Popup, Polyline } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
-import { Search, Bell, User, Bus, Map as MapIcon, Settings, LogOut, Menu, X, Info, AlertTriangle, Moon, Sun, Type } from 'lucide-react';
+import { Search, Bell, User, Bus, Map as MapIcon, Settings, LogOut, Menu, X, Info, AlertTriangle, Moon, Sun, Type, ChevronRight } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import './Dashboard.css';
@@ -37,8 +37,8 @@ const Dashboard = () => {
   };
 
   const menuVariants = {
-    hidden: { opacity: 0, y: -20, scale: 0.95 },
-    visible: { opacity: 1, y: 0, scale: 1, transition: { type: 'spring', damping: 20, stiffness: 300 } }
+    hidden: { opacity: 0, y: -10, scale: 0.95 },
+    visible: { opacity: 1, y: 0, scale: 1, transition: { duration: 0.2 } }
   };
 
   return (
@@ -54,7 +54,7 @@ const Dashboard = () => {
           <button className={`nav-item ${activeTab === 'settings' ? 'active' : ''}`} onClick={() => setActiveTab(activeTab === 'settings' ? 'map' : 'settings')}><Settings size={20} /> <span>Ajustes</span></button>
         </nav>
         <div className="sidebar-footer">
-          <button onClick={handleLogout} className="logout-btn"><LogOut size={18} /> <span>Salir</span></button>
+          <button onClick={handleLogout} className="logout-btn"><LogOut size={18} /> <span>Cerrar Sesión</span></button>
         </div>
       </aside>
 
@@ -64,6 +64,20 @@ const Dashboard = () => {
             <div className="search-bar">
               <Search size={18} className="search-icon" />
               <input type="text" placeholder="Buscar ruta..." value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} />
+              
+              <AnimatePresence>
+                {searchQuery.length > 0 && (
+                  <motion.div initial={{ opacity: 0, y: 5 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: 5 }} className="search-suggestions glass">
+                    {filteredRoutes.length > 0 ? filteredRoutes.map(r => (
+                      <div key={r.id} className="suggestion-item" onClick={() => { setSelectedRoute(r); setSearchQuery(''); }}>
+                        <Bus size={16} color={r.color} />
+                        <span>{r.name}</span>
+                        <ChevronRight size={14} style={{ marginLeft: 'auto', opacity: 0.5 }} />
+                      </div>
+                    )) : <div className="suggestion-item">No hay resultados</div>}
+                  </motion.div>
+                )}
+              </AnimatePresence>
             </div>
           </div>
           <div className="user-actions">
@@ -92,10 +106,10 @@ const Dashboard = () => {
 
               {activePanel === 'user' && (
                 <motion.div variants={menuVariants} initial="hidden" animate="visible" exit="hidden" className="dropdown-panel user-dropdown">
-                  <button className="nav-item"><User size={18} /> Perfil</button>
+                  <button className="nav-item"><User size={18} /> Mi Perfil</button>
                   <button className="nav-item" onClick={() => {setActiveTab('settings'); setActivePanel(null)}}><Settings size={18} /> Ajustes</button>
                   <hr style={{ opacity: 0.1, margin: '10px 0' }} />
-                  <button className="logout-btn" onClick={handleLogout} style={{ border: 'none' }}><LogOut size={18} /> Salir</button>
+                  <button className="logout-btn secondary" onClick={handleLogout}><LogOut size={18} /> Salir</button>
                 </motion.div>
               )}
             </AnimatePresence>
@@ -149,9 +163,9 @@ const Dashboard = () => {
               <motion.div initial={{ y: 100, opacity: 0 }} animate={{ y: 0, opacity: 1 }} exit={{ y: 100, opacity: 0 }} className="route-detail-panel">
                 <div className="detail-header"><h3>{selectedRoute.name}</h3><button className="close-btn" onClick={() => setSelectedRoute(null)}><X size={18} /></button></div>
                 <div className="detail-stats">
-                  <div className="stat"><span>Precio</span><strong>{selectedRoute.price}</strong></div>
-                  <div className="stat"><span>Cupos</span><strong>{selectedRoute.seats}</strong></div>
-                  <div className="stat"><span>Estado</span><strong>OK</strong></div>
+                  <div className="stat"><span>Precio:</span><strong>{selectedRoute.price}</strong></div>
+                  <div className="stat"><span>Cupos:</span><strong>{selectedRoute.seats}</strong></div>
+                  <div className="stat"><span>Estado:</span><strong>Operativo</strong></div>
                 </div>
               </motion.div>
             )}
