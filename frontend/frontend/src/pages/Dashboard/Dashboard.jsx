@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { MapContainer, TileLayer, Marker, Popup, Polyline } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
-import { Search, Bell, User, Bus, Map as MapIcon, Settings, LogOut, Menu, X, Info, AlertTriangle, Moon, Sun, Type, ChevronRight, Camera, Mail, Lock } from 'lucide-react';
+import { Search, Bell, User, Bus, Map as MapIcon, Settings, LogOut, Menu, X, Info, AlertTriangle, Moon, Sun, Type, ChevronRight, Camera, Mail, Lock, ChevronLeft } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import './Dashboard.css';
@@ -14,10 +14,18 @@ const Dashboard = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [fontSize, setFontSize] = useState(14);
   const [isDarkMode, setIsDarkMode] = useState(true);
+  const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
 
   useEffect(() => {
     document.documentElement.style.setProperty('--base-font-size', `${fontSize}px`);
   }, [fontSize]);
+
+  const toggleSidebar = () => {
+    if (!isSidebarCollapsed) {
+      setActiveTab('map'); // Cerrar submenús al contraer
+    }
+    setIsSidebarCollapsed(!isSidebarCollapsed);
+  };
 
   const routes = [
     { id: 1, name: 'P3 - Autopista', color: '#00A859', price: '$2.800', seats: 12, coords: [[7.11, -73.12], [7.115, -73.125], [7.125, -73.135]] },
@@ -33,7 +41,7 @@ const Dashboard = () => {
   ];
 
   const handleLogout = () => {
-    if(window.confirm('¿Deseas cerrar sesión y volver al inicio?')) navigate('/');
+    if(window.confirm('¿Deseas cerrar sesión?')) navigate('/');
   };
 
   const menuVariants = {
@@ -42,20 +50,33 @@ const Dashboard = () => {
   };
 
   return (
-    <div className={`dashboard-layout ${isDarkMode ? 'dark-theme' : 'light-theme'}`}>
-      <aside className="sidebar">
+    <div className={`dashboard-layout ${isDarkMode ? 'dark-theme' : 'light-theme'} ${isSidebarCollapsed ? 'sidebar-collapsed' : ''}`}>
+      <aside className={`sidebar ${isSidebarCollapsed ? 'collapsed' : ''}`}>
         <div className="sidebar-header">
           <div className="logo-small"><Bus size={24} color="white" /></div>
-          <h3>SmartTrans</h3>
+          {!isSidebarCollapsed && <h3>SmartTrans</h3>}
+          <button className="collapse-toggle" onClick={toggleSidebar}>
+            {isSidebarCollapsed ? <ChevronRight size={18} /> : <ChevronLeft size={18} />}
+          </button>
         </div>
         <nav className="sidebar-nav">
-          <button className={`nav-item ${activeTab === 'map' ? 'active' : ''}`} onClick={() => setActiveTab('map')}><MapIcon size={20} /> <span>Mapa</span></button>
-          <button className={`nav-item ${activeTab === 'routes' ? 'active' : ''}`} onClick={() => setActiveTab(activeTab === 'routes' ? 'map' : 'routes')}><Bus size={20} /> <span>Rutas</span></button>
-          <button className={`nav-item ${activeTab === 'profile' ? 'active' : ''}`} onClick={() => setActiveTab(activeTab === 'profile' ? 'map' : 'profile')}><User size={20} /> <span>Mi Perfil</span></button>
-          <button className={`nav-item ${activeTab === 'settings' ? 'active' : ''}`} onClick={() => setActiveTab(activeTab === 'settings' ? 'map' : 'settings')}><Settings size={20} /> <span>Ajustes</span></button>
+          <button className={`nav-item ${activeTab === 'map' ? 'active' : ''}`} onClick={() => setActiveTab('map')}>
+            <MapIcon size={20} /> {!isSidebarCollapsed && <span>Mapa</span>}
+          </button>
+          <button className={`nav-item ${activeTab === 'routes' ? 'active' : ''}`} onClick={() => { if(isSidebarCollapsed) setIsSidebarCollapsed(false); setActiveTab(activeTab === 'routes' ? 'map' : 'routes'); }}>
+            <Bus size={20} /> {!isSidebarCollapsed && <span>Rutas</span>}
+          </button>
+          <button className={`nav-item ${activeTab === 'profile' ? 'active' : ''}`} onClick={() => { if(isSidebarCollapsed) setIsSidebarCollapsed(false); setActiveTab(activeTab === 'profile' ? 'map' : 'profile'); }}>
+            <User size={20} /> {!isSidebarCollapsed && <span>Perfil</span>}
+          </button>
+          <button className={`nav-item ${activeTab === 'settings' ? 'active' : ''}`} onClick={() => { if(isSidebarCollapsed) setIsSidebarCollapsed(false); setActiveTab(activeTab === 'settings' ? 'map' : 'settings'); }}>
+            <Settings size={20} /> {!isSidebarCollapsed && <span>Ajustes</span>}
+          </button>
         </nav>
         <div className="sidebar-footer">
-          <button onClick={handleLogout} className="logout-btn"><LogOut size={18} /> <span>Cerrar Sesión</span></button>
+          <button onClick={handleLogout} className="logout-btn">
+            <LogOut size={18} /> {!isSidebarCollapsed && <span>Salir</span>}
+          </button>
         </div>
       </aside>
 
@@ -65,15 +86,12 @@ const Dashboard = () => {
             <div className="search-bar">
               <Search size={18} className="search-icon" />
               <input type="text" placeholder="Buscar ruta..." value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} />
-              
               <AnimatePresence>
                 {searchQuery.length > 0 && (
                   <motion.div initial={{ opacity: 0, y: 5 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: 5 }} className="search-suggestions glass">
                     {filteredRoutes.length > 0 ? filteredRoutes.map(r => (
                       <div key={r.id} className="suggestion-item" onClick={() => { setSelectedRoute(r); setSearchQuery(''); }}>
-                        <Bus size={16} color={r.color} />
-                        <span>{r.name}</span>
-                        <ChevronRight size={14} style={{ marginLeft: 'auto', opacity: 0.5 }} />
+                        <Bus size={16} color={r.color} /> <span>{r.name}</span> <ChevronRight size={14} style={{ marginLeft: 'auto', opacity: 0.5 }} />
                       </div>
                     )) : <div className="suggestion-item">No hay resultados</div>}
                   </motion.div>
@@ -83,14 +101,12 @@ const Dashboard = () => {
           </div>
           <div className="user-actions">
             <button className="action-btn bell-btn" onClick={() => setActivePanel(activePanel === 'notif' ? null : 'notif')}>
-              <Bell size={20} />
-              {notifications.length > 0 && <span className="notif-badge"></span>}
+              <Bell size={20} /> {notifications.length > 0 && <span className="notif-badge"></span>}
             </button>
-            <div className="user-profile" onClick={() => setActiveTab('profile')}>
+            <div className="user-profile" onClick={() => { setIsSidebarCollapsed(false); setActiveTab('profile'); }}>
               <span>J. Bermudez</span>
               <div className="avatar"><User size={20} color="white" /></div>
             </div>
-
             <AnimatePresence>
               {activePanel === 'notif' && (
                 <motion.div variants={menuVariants} initial="hidden" animate="visible" exit="hidden" className="dropdown-panel">
@@ -98,10 +114,7 @@ const Dashboard = () => {
                   <div className="notif-list">
                     {notifications.map(n => (
                       <div key={n.id} className={`notif-item ${n.type}`}>
-                        <div style={{ display: 'flex', gap: '10px' }}>
-                          {n.icon}
-                          <div><strong>{n.title}</strong><p style={{ margin: '3px 0', fontSize: '12px' }}>{n.desc}</p></div>
-                        </div>
+                        <div style={{ display: 'flex', gap: '10px' }}>{n.icon}<div><strong>{n.title}</strong><p style={{ margin: '3px 0', fontSize: '12px' }}>{n.desc}</p></div></div>
                       </div>
                     ))}
                   </div>
@@ -126,39 +139,27 @@ const Dashboard = () => {
                 </div>
               </motion.div>
             )}
-
             {activeTab === 'profile' && (
               <motion.div initial={{ x: -100, opacity: 0 }} animate={{ x: 0, opacity: 1 }} exit={{ x: -100, opacity: 0 }} className="side-panel">
                 <div className="panel-header"><h4>Mi Perfil</h4><button className="close-btn" onClick={() => setActiveTab('map')}><X size={18} /></button></div>
                 <div className="profile-section">
-                  <div className="profile-avatar-edit">
-                    <div className="big-avatar"><User size={40} color="white" /></div>
-                    <button className="camera-btn"><Camera size={16} /></button>
-                  </div>
-                  <div className="input-group">
-                    <label><Mail size={16} /> Correo Electrónico</label>
-                    <input type="email" defaultValue="j.bermudez@transporte.com" />
-                  </div>
-                  <div className="input-group">
-                    <label><Lock size={16} /> Nueva Contraseña</label>
-                    <input type="password" placeholder="********" />
-                  </div>
-                  <button className="action-btn" style={{ width: '100%', marginTop: '20px', background: 'var(--primary)', color: 'white' }}>Guardar Cambios</button>
-                  <button onClick={handleLogout} className="logout-btn" style={{ marginTop: '20px' }}><LogOut size={18} /> Cerrar Sesión</button>
+                  <div className="profile-avatar-edit"><div className="big-avatar"><User size={40} color="white" /></div><button className="camera-btn"><Camera size={16} /></button></div>
+                  <div className="input-group"><label><Mail size={16} /> Correo</label><input type="email" defaultValue="j.bermudez@transporte.com" /></div>
+                  <div className="input-group"><label><Lock size={16} /> Contraseña</label><input type="password" placeholder="********" /></div>
+                  <button className="action-btn" style={{ width: '100%', marginTop: '20px', background: 'var(--primary)', color: 'white' }}>Guardar</button>
                 </div>
               </motion.div>
             )}
-
             {activeTab === 'settings' && (
               <motion.div initial={{ x: -100, opacity: 0 }} animate={{ x: 0, opacity: 1 }} exit={{ x: -100, opacity: 0 }} className="side-panel">
                 <div className="panel-header"><h4>Ajustes</h4><button className="close-btn" onClick={() => setActiveTab('map')}><X size={18} /></button></div>
                 <div className="settings-section">
-                  <label><Type size={18} /> Tamaño de letra: {fontSize}px</label>
+                  <label><Type size={18} /> Letra: {fontSize}px</label>
                   <input type="range" min="12" max="22" value={fontSize} onChange={(e) => setFontSize(parseInt(e.target.value))} />
                   <div style={{ marginTop: '30px' }}>
-                    <label>{isDarkMode ? <Moon size={18} /> : <Sun size={18} />} Tema Visual</label>
+                    <label>{isDarkMode ? <Moon size={18} /> : <Sun size={18} />} Tema</label>
                     <button className="action-btn" style={{ width: '100%', marginTop: '10px', background: isDarkMode ? 'var(--primary)' : '#eee', color: isDarkMode ? 'white' : 'black' }} onClick={() => setIsDarkMode(!isDarkMode)}>
-                      {isDarkMode ? 'Modo Oscuro' : 'Modo Claro'}
+                      {isDarkMode ? 'Oscuro' : 'Claro'}
                     </button>
                   </div>
                 </div>
@@ -179,11 +180,7 @@ const Dashboard = () => {
             {selectedRoute && (
               <motion.div initial={{ y: 100, opacity: 0 }} animate={{ y: 0, opacity: 1 }} exit={{ y: 100, opacity: 0 }} className="route-detail-panel">
                 <div className="detail-header"><h3>{selectedRoute.name}</h3><button className="close-btn" onClick={() => setSelectedRoute(null)}><X size={18} /></button></div>
-                <div className="detail-stats">
-                  <div className="stat"><span>Precio:</span><strong>{selectedRoute.price}</strong></div>
-                  <div className="stat"><span>Cupos:</span><strong>{selectedRoute.seats}</strong></div>
-                  <div className="stat"><span>Estado:</span><strong>Operativo</strong></div>
-                </div>
+                <div className="detail-stats"><div className="stat"><span>Precio:</span><strong>{selectedRoute.price}</strong></div><div className="stat"><span>Cupos:</span><strong>{selectedRoute.seats}</strong></div><div className="stat"><span>Estado:</span><strong>OK</strong></div></div>
               </motion.div>
             )}
           </AnimatePresence>
