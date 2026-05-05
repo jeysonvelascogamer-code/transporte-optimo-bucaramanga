@@ -4,30 +4,29 @@
   --text-main: #f8fafc;
   --text-muted: #94a3b8;
   --border: rgba(255, 255, 255, 0.1);
-  --glass: rgba(30, 41, 59, 0.7);
 }
 
 body, html { margin: 0; padding: 0; font-family: 'Inter', sans-serif; background: var(--bg-dark); overflow: hidden; height: 100vh; }
 
-.glass { background: var(--glass); backdrop-filter: blur(12px); border: 1px solid var(--border); border-radius: 16px; }
-
 .dashboard-layout { display: flex; height: 100vh; width: 100vw; }
 
-/* SIDEBAR REFINADO */
+/* SIDEBAR: Limpio en PC */
 .sidebar {
   width: 240px; min-width: 240px; background: #0f172a; border-right: 1px solid var(--border);
-  display: flex; flex-direction: column; padding: 20px; transition: all 0.3s ease; z-index: 2000;
+  display: flex; flex-direction: column; padding: 24px; z-index: 2000;
 }
-.sidebar.minimized { width: 80px; min-width: 80px; padding: 20px 10px; }
-.sidebar.minimized h3, .sidebar.minimized span { display: none; }
+.sidebar-header { display: flex; align-items: center; gap: 12px; margin-bottom: 40px; }
+.logo-small { background: var(--primary); padding: 8px; border-radius: 10px; display: flex; }
+.sidebar-header h3 { margin: 0; font-size: 1.1rem; color: white; }
 
-.sidebar-header { display: flex; align-items: center; gap: 12px; margin-bottom: 35px; height: 40px; }
-.logo-small { background: var(--primary); padding: 8px; border-radius: 10px; display: flex; align-items: center; justify-content: center; }
+/* Ocultar botones táctiles en PC */
+.close-menu, .menu-toggle { display: none !important; }
 
-.sidebar-nav { flex: 1; display: flex; flex-direction: column; gap: 10px; }
+.sidebar-nav { flex: 1; display: flex; flex-direction: column; gap: 8px; }
 .nav-item {
   display: flex; align-items: center; gap: 12px; padding: 12px; border-radius: 12px;
   border: none; background: none; color: var(--text-muted); cursor: pointer; transition: 0.2s;
+  text-align: left; width: 100%;
 }
 .nav-item.active, .nav-item:hover { background: rgba(0, 168, 89, 0.1); color: var(--primary); }
 
@@ -38,10 +37,10 @@ body, html { margin: 0; padding: 0; font-family: 'Inter', sans-serif; background
 }
 
 /* MAIN CONTENT */
-.main-content { flex: 1; display: flex; flex-direction: column; min-width: 0; background: #020617; }
+.main-content { flex: 1; display: flex; flex-direction: column; min-width: 0; background: #020617; position: relative; }
 
-/* HEADER REFINADO */
-.top-header { height: 70px; display: flex; align-items: center; justify-content: space-between; padding: 0 24px; }
+/* HEADER */
+.top-header { height: 70px; display: flex; align-items: center; justify-content: space-between; padding: 0 24px; border-bottom: 1px solid var(--border); }
 .header-left { display: flex; align-items: center; gap: 15px; flex: 1; }
 
 .search-bar { position: relative; width: 100%; max-width: 400px; }
@@ -51,50 +50,48 @@ body, html { margin: 0; padding: 0; font-family: 'Inter', sans-serif; background
 }
 .search-icon { position: absolute; left: 15px; top: 13px; color: var(--text-muted); }
 
-.user-actions { display: flex; align-items: center; gap: 15px; }
+/* DROPDOWN SYSTEM */
+.user-actions { display: flex; align-items: center; gap: 15px; position: relative; }
+
 .action-btn {
   background: rgba(255,255,255,0.05); border: 1px solid var(--border); color: white;
-  padding: 10px; border-radius: 12px; cursor: pointer; display: flex; align-items: center;
+  padding: 10px; border-radius: 12px; cursor: pointer; display: flex; align-items: center; position: relative;
 }
-.action-btn:hover { background: rgba(255,255,255,0.1); }
 
 .user-profile {
-  display: flex; align-items: center; gap: 12px; padding: 6px 15px 6px 6px;
+  display: flex; align-items: center; gap: 12px; padding: 6px 12px;
   background: rgba(255,255,255,0.05); border-radius: 14px; border: 1px solid var(--border); cursor: pointer;
 }
 
-/* PANEL LATERAL DE ALERTAS/RUTAS */
+/* PESTAÑAS FLOTANTES (DROPDOWNS) */
+.dropdown-panel {
+  position: absolute; top: 60px; right: 0; width: 300px; background: #1e293b;
+  border: 1px solid var(--border); border-radius: 16px; padding: 20px; z-index: 5000;
+  box-shadow: 0 20px 50px rgba(0,0,0,0.8);
+  backdrop-filter: blur(10px);
+}
+
+.notif-list { display: flex; flex-direction: column; gap: 10px; }
+.notif-item { padding: 12px; background: rgba(255,255,255,0.03); border-radius: 12px; border-left: 4px solid var(--primary); }
+.notif-item.alert { border-left-color: #ff4444; }
+
+/* MAPA Y PANELES */
 .content-container { flex: 1; display: flex; overflow: hidden; position: relative; }
+.map-wrapper { flex: 1; height: 100%; position: relative; z-index: 1; }
+.leaflet-map { width: 100%; height: 100%; }
+
 .side-panel {
   width: 340px; min-width: 340px; background: #0f172a; border-right: 1px solid var(--border);
   padding: 24px; z-index: 500; overflow-y: auto;
 }
 
-/* ESTILO DE ALERTAS AGRUPADAS */
-.notif-item {
-  padding: 15px; border-radius: 14px; margin-bottom: 12px;
-  background: rgba(255,255,255,0.03); border: 1px solid var(--border);
-}
-.notif-item.alert { border-left: 4px solid #ff4444; }
-.notif-item.info { border-left: 4px solid var(--primary); }
-
-/* DETALLES DE RUTA FLOTANTE (REPARADO) */
+/* DETALLE DE RUTA FLOTANTE */
 .route-detail-panel {
   position: absolute; bottom: 30px; left: 50%; transform: translateX(-50%);
-  width: 90%; max-width: 450px; padding: 20px; z-index: 1500;
-  box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+  width: 450px; padding: 20px; z-index: 1500; background: rgba(30, 41, 59, 0.8);
+  backdrop-filter: blur(12px); border-radius: 20px; border: 1px solid var(--border);
 }
-.detail-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 15px; }
-.detail-stats { display: flex; justify-content: space-around; gap: 10px; }
-.stat { text-align: center; background: rgba(255,255,255,0.05); padding: 10px; border-radius: 12px; flex: 1; }
-.stat span { font-size: 10px; color: var(--text-muted); text-transform: uppercase; }
-.stat strong { display: block; font-size: 14px; color: var(--primary); }
-
-.map-wrapper { flex: 1; height: 100%; position: relative; z-index: 1; }
-.leaflet-map { width: 100%; height: 100%; }
-
-@media (max-width: 1024px) {
-  .sidebar { position: fixed; left: -240px; }
-  .sidebar.open { left: 0; }
-  .side-panel { position: absolute; width: 100%; height: 100%; z-index: 1000; }
-}
+.detail-stats { display: flex; justify-content: space-around; gap: 10px; margin-top: 15px; }
+.stat { background: rgba(255,255,255,0.05); padding: 10px; border-radius: 12px; flex: 1; text-align: center; }
+.stat span { font-size: 10px; color: var(--text-muted); }
+.stat strong { display: block; color: var(--primary); font-size: 14px; }
