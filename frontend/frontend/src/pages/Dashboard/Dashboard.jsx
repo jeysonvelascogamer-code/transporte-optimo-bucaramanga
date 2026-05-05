@@ -1,10 +1,28 @@
 import React, { useState, useEffect } from 'react';
-import { MapContainer, TileLayer, Marker, Popup, Polyline } from 'react-leaflet';
+import { MapContainer, TileLayer, Marker, Popup, Polyline, useMap } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
-import { Search, Bell, User, Bus, Map as MapIcon, Settings, LogOut, Menu, X, Info, AlertTriangle, Moon, Sun, Type, ChevronRight, Camera, Mail, Lock, ChevronLeft } from 'lucide-react';
+import L from 'leaflet';
+import { Search, Bell, User, Bus, Map as MapIcon, Settings, LogOut, Menu, X, Info, AlertTriangle, Moon, Sun, Type, ChevronRight, Camera, Mail, Lock, ChevronLeft, Navigation } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import './Dashboard.css';
+
+// Corregir iconos de Leaflet por defecto
+delete L.Icon.Default.prototype._getIconUrl;
+L.Icon.Default.mergeOptions({
+  iconRetinaUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon-2x.png',
+  iconUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon.png',
+  shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png',
+});
+
+// Componente para manejar el centrado del mapa
+const MapController = ({ center }) => {
+  const map = useMap();
+  useEffect(() => {
+    if (center) map.flyTo(center, 15);
+  }, [center, map]);
+  return null;
+};
 
 const Dashboard = () => {
   const navigate = useNavigate();
@@ -15,16 +33,29 @@ const Dashboard = () => {
   const [fontSize, setFontSize] = useState(14);
   const [isDarkMode, setIsDarkMode] = useState(true);
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
+  const [userLocation, setUserLocation] = useState(null);
 
   useEffect(() => {
     document.documentElement.style.setProperty('--base-font-size', `${fontSize}px`);
   }, [fontSize]);
 
   const toggleSidebar = () => {
-    if (!isSidebarCollapsed) {
-      setActiveTab('map'); // Cerrar submenús al contraer
-    }
+    if (!isSidebarCollapsed) setActiveTab('map');
     setIsSidebarCollapsed(!isSidebarCollapsed);
+  };
+
+  const handleLocate = () => {
+    if (!navigator.geolocation) {
+      alert('Tu navegador no soporta geolocalización');
+      return;
+    }
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        const { latitude, longitude } = position.coords;
+        setUserLocation([latitude, longitude]);
+      },
+      () => alert('No se pudo obtener tu ubicación. Verifica los permisos.')
+    );
   };
 
   const routes = [
@@ -168,8 +199,17 @@ const Dashboard = () => {
           </AnimatePresence>
 
           <div className="map-wrapper">
+            <button className="locate-btn" onClick={handleLocate} title="Mi Ubicación">
+              <Navigation size={20} />
+            </button>
             <MapContainer center={[7.1193, -73.1227]} zoom={13} className="leaflet-map">
               <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
+              <MapController center={userLocation} />
+              {userLocation && (
+                <Marker position={userLocation}>
+                  <Popup>Estás aquí</Popup>
+                </Marker>
+              )}
               {filteredRoutes.map(route => (
                 <Polyline key={route.id} positions={route.coords} color={route.color} weight={selectedRoute?.id === route.id ? 8 : 4} eventHandlers={{ click: () => setSelectedRoute(route) }} />
               ))}
