@@ -22,10 +22,12 @@ const Dashboard = () => {
 
   const handleTabClick = (tab) => {
     if (tab === activeTab) {
-      setIsSidebarMinimized(!isSidebarMinimized);
+      // Si volvemos a pulsar el mismo icono, cerramos el panel y volvemos al mapa
+      setActiveTab('map');
+      setIsSidebarMinimized(false);
     } else {
       setActiveTab(tab);
-      // Minimizar automáticamente si abrimos un panel lateral
+      // Si abrimos una herramienta (rutas, alertas, ajustes), minimizamos el menú
       if (tab !== 'map') {
         setIsSidebarMinimized(true);
       } else {
