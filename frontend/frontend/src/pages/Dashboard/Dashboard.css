@@ -26,7 +26,7 @@ body, html {
 }
 
 /* FORZAR COLOR DE TEXTO EN TODO */
-h1, h2, h3, h4, h5, h6, p, span, strong, input { color: var(--text-main); }
+h1, h2, h3, h4, h5, h6, p, span, strong, input, label { color: var(--text-main); }
 
 .dashboard-layout { display: flex; height: 100vh; width: 100vw; transition: all 0.3s ease; }
 .main-content { flex: 1; display: flex; flex-direction: column; background: var(--bg-dark); position: relative; }
