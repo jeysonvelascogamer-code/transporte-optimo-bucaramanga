@@ -76,7 +76,7 @@ const Login = () => {
         </form>
 
         <div className="login-footer">
-          <p>¿No tienes cuenta? <a href="#register">Regístrate aquí</a></p>
+          <p>¿No tienes cuenta? <button onClick={() => navigate('/register')} style={{ background: 'none', border: 'none', color: 'var(--primary)', cursor: 'pointer', fontWeight: '600' }}>Regístrate aquí</button></p>
         </div>
       </motion.div>
 

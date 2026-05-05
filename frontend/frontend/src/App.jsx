@@ -1,6 +1,7 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import Login from './pages/Login/Login';
+import Register from './pages/Register/Register';
 
 // Placeholder para el Mapa/Dashboard que crearemos en la siguiente tarea
 const DashboardPlaceholder = () => (
@@ -19,6 +20,7 @@ function App() {
       <div className="App">
         <Routes>
           <Route path="/" element={<Login />} />
+          <Route path="/register" element={<Register />} />
           <Route path="/dashboard" element={<DashboardPlaceholder />} />
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
