@@ -22,19 +22,43 @@ body, html {
 
 .dashboard-layout { display: flex; height: 100vh; width: 100vw; }
 
-/* SIDEBAR */
+/* SIDEBAR: Soporte para estado contraído */
 .sidebar {
-  width: 220px; min-width: 220px;
-  background: rgba(15, 23, 42, 0.9);
+  width: 220px;
+  min-width: 220px;
+  background: rgba(15, 23, 42, 0.95);
   backdrop-filter: blur(10px);
   border-right: 1px solid var(--border);
-  display: flex; flex-direction: column; padding: 20px;
-  transition: left 0.3s ease-in-out;
+  display: flex;
+  flex-direction: column;
+  padding: 20px;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   z-index: 100;
+  position: relative;
+  box-shadow: none; /* Quitamos la sombra que molestaba a la izquierda */
 }
 
-.sidebar-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 30px; }
-.sidebar-header h3 { font-size: 1.1rem; margin: 0; color: white; }
+.sidebar.minimized {
+  width: 80px;
+  min-width: 80px;
+  padding: 20px 10px;
+}
+
+.sidebar.minimized .sidebar-header h3,
+.sidebar.minimized .nav-item span,
+.sidebar.minimized .logout-btn span,
+.sidebar.minimized .user-profile span {
+  display: none;
+}
+
+.sidebar.minimized .sidebar-header {
+  justify-content: center;
+}
+
+.sidebar.minimized .nav-item {
+  justify-content: center;
+  padding: 12px;
+}
 
 .sidebar-nav { flex: 1; display: flex; flex-direction: column; gap: 5px; }
 .nav-item {

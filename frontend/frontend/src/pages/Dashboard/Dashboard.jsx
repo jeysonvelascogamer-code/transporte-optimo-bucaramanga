@@ -8,16 +8,31 @@ import './Dashboard.css';
 const Dashboard = () => {
   const navigate = useNavigate();
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [isSidebarMinimized, setIsSidebarMinimized] = useState(false);
   const [activeTab, setActiveTab] = useState('map'); // map, routes, alerts, settings
   const [activePanel, setActivePanel] = useState(null);
   const [selectedRoute, setSelectedRoute] = useState(null);
-  const [fontSize, setFontSize] = useState(16);
+  const [fontSize, setFontSize] = useState(14);
   const [mapStyle, setMapStyle] = useState('normal');
 
   // Aplicar ajustes globales
   useEffect(() => {
     document.documentElement.style.setProperty('--base-font-size', `${fontSize}px`);
   }, [fontSize]);
+
+  const handleTabClick = (tab) => {
+    if (tab === activeTab) {
+      setIsSidebarMinimized(!isSidebarMinimized);
+    } else {
+      setActiveTab(tab);
+      // Minimizar automáticamente si abrimos un panel lateral
+      if (tab !== 'map') {
+        setIsSidebarMinimized(true);
+      } else {
+        setIsSidebarMinimized(false);
+      }
+    }
+  };
 
   const position = [7.1193, -73.1227];
 
@@ -50,7 +65,7 @@ const Dashboard = () => {
   return (
     <div className="dashboard-layout">
       {/* Sidebar Lateral */}
-      <aside className={`sidebar glass ${isSidebarOpen ? 'open' : ''}`}>
+      <aside className={`sidebar glass ${isSidebarOpen ? 'open' : ''} ${isSidebarMinimized ? 'minimized' : ''}`}>
         <div className="sidebar-header">
           <div className="logo-small"><Bus size={24} color="white" /></div>
           <h3>SmartTrans</h3>
@@ -58,14 +73,14 @@ const Dashboard = () => {
         </div>
 
         <nav className="sidebar-nav">
-          <button className={`nav-item ${activeTab === 'map' ? 'active' : ''}`} onClick={() => setActiveTab('map')}><MapIcon size={20} /> Mapa</button>
-          <button className={`nav-item ${activeTab === 'routes' ? 'active' : ''}`} onClick={() => setActiveTab('routes')}><Bus size={20} /> Rutas</button>
-          <button className={`nav-item ${activeTab === 'alerts' ? 'active' : ''}`} onClick={() => setActiveTab('alerts')}><Bell size={20} /> Alertas</button>
-          <button className={`nav-item ${activeTab === 'settings' ? 'active' : ''}`} onClick={() => setActiveTab('settings')}><Settings size={20} /> Ajustes</button>
+          <button className={`nav-item ${activeTab === 'map' ? 'active' : ''}`} onClick={() => handleTabClick('map')}><MapIcon size={20} /> <span>Mapa</span></button>
+          <button className={`nav-item ${activeTab === 'routes' ? 'active' : ''}`} onClick={() => handleTabClick('routes')}><Bus size={20} /> <span>Rutas</span></button>
+          <button className={`nav-item ${activeTab === 'alerts' ? 'active' : ''}`} onClick={() => handleTabClick('alerts')}><Bell size={20} /> <span>Alertas</span></button>
+          <button className={`nav-item ${activeTab === 'settings' ? 'active' : ''}`} onClick={() => handleTabClick('settings')}><Settings size={20} /> <span>Ajustes</span></button>
         </nav>
 
         <div className="sidebar-footer">
-          <button onClick={handleLogout} className="logout-btn"><LogOut size={18} /> Salir</button>
+          <button onClick={handleLogout} className="logout-btn"><LogOut size={18} /> <span>Salir</span></button>
         </div>
       </aside>
 
