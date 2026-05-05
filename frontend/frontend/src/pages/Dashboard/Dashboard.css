@@ -25,8 +25,9 @@ body, html {
   overflow: hidden; height: 100vh; font-size: var(--base-font-size);
 }
 
-/* FORZAR COLOR DE TEXTO EN TODO */
+/* FORZAR COLOR DE TEXTO EN TODO (EXCEPTO MAPA) */
 h1, h2, h3, h4, h5, h6, p, span, strong, input, label { color: var(--text-main); }
+.leaflet-container * { color: initial; } /* RESTAURAR COLOR INTERNO DEL MAPA */
 
 .dashboard-layout { display: flex; height: 100vh; width: 100vw; transition: all 0.3s ease; }
 .main-content { flex: 1; display: flex; flex-direction: column; background: var(--bg-dark); position: relative; }
