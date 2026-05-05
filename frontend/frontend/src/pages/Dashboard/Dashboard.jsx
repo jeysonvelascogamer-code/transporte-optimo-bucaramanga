@@ -27,9 +27,19 @@ const Dashboard = () => {
   ];
 
   const notifications = [
-    { id: 1, title: 'Retraso en Ruta P3', desc: 'Accidente en la cra 27 con calle 45.', type: 'alert' },
-    { id: 2, title: 'Nueva Ruta Disponible', desc: 'Prueba la nueva ruta alimentadora.', type: 'info' }
+    { id: 1, title: 'Retraso en Ruta P3', desc: 'Accidente en la cra 27 con calle 45.', type: 'alert', category: 'Tráfico', time: '14:20' },
+    { id: 2, title: 'Nueva Ruta Disponible', desc: 'Prueba la nueva ruta alimentadora.', type: 'info', category: 'Sistema', time: '12:00' },
+    { id: 3, title: 'Lluvias fuertes', desc: 'Se reportan retrasos por clima en el centro.', type: 'alert', category: 'Clima', time: '10:15' }
   ];
+
+  const togglePanel = (panel) => {
+    if (panel === 'notif') {
+      setActiveTab('alerts');
+      setActivePanel(null);
+    } else {
+      setActivePanel(activePanel === panel ? null : panel);
+    }
+  };
 
   const handleLogout = () => {
     if(window.confirm('¿Estás seguro que deseas cerrar sesión?')) {
@@ -71,8 +81,9 @@ const Dashboard = () => {
           </div>
           
           <div className="user-actions">
-            <button className="action-btn" onClick={() => setActivePanel(activePanel === 'notif' ? null : 'notif')}>
-              <Bell size={20} /><span className="badge"></span>
+            <button className="action-btn" onClick={() => togglePanel('notif')}>
+              <Bell size={20} />
+              <span className="badge"></span>
             </button>
             <div className="user-profile" onClick={() => setActivePanel(activePanel === 'user' ? null : 'user')}>
               <span>J. Bermudez</span>
@@ -109,8 +120,13 @@ const Dashboard = () => {
                 </div>
                 <div className="notification-list">
                   {notifications.map(n => (
-                    <div key={n.id} className={`notif-item ${n.type}`}>
-                      <strong>{n.title}</strong><p>{n.desc}</p>
+                    <div key={n.id} className={`notif-item ${n.type}`} style={{ display: 'flex', flexDirection: 'column', gap: '5px' }}>
+                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                        <span style={{ fontSize: '10px', textTransform: 'uppercase', color: 'var(--primary)', fontWeight: '700' }}>{n.category}</span>
+                        <span style={{ fontSize: '10px', color: 'var(--text-muted)' }}>{n.time}</span>
+                      </div>
+                      <strong>{n.title}</strong>
+                      <p>{n.desc}</p>
                     </div>
                   ))}
                 </div>
