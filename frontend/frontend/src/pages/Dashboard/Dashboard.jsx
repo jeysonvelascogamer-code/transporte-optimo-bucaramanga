@@ -198,14 +198,16 @@ const Dashboard = () => {
           )}
         </AnimatePresence>
 
-        {/* Detalle de Ruta */}
+        {/* Detalle de Ruta Flotante */}
         <AnimatePresence>
           {selectedRoute && (
-            <motion.div initial={{ y: 100 }} animate={{ y: 0 }} exit={{ y: 100 }} className="route-detail-panel glass">
+            <motion.div initial={{ y: 100, opacity: 0 }} animate={{ y: 0, opacity: 1 }} exit={{ y: 100, opacity: 0 }} className="route-detail-panel glass">
               <div className="detail-header">
-                <div className="route-badge" style={{ background: selectedRoute.color }}></div>
-                <h3>{selectedRoute.name}</h3>
-                <button onClick={() => setSelectedRoute(null)}><X size={20} /></button>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                  <div className="route-badge" style={{ background: selectedRoute.color, width: '12px', height: '12px', borderRadius: '50%' }}></div>
+                  <h3 style={{ margin: 0, fontSize: '1.1rem' }}>{selectedRoute.name}</h3>
+                </div>
+                <button className="close-menu" onClick={() => setSelectedRoute(null)}><X size={20} /></button>
               </div>
               <div className="detail-stats">
                 <div className="stat"><span>Precio</span><strong>{selectedRoute.price}</strong></div>
