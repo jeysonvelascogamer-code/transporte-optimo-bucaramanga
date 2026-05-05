@@ -81,7 +81,10 @@ const Dashboard = () => {
             </div>
           </div>
           <div className="user-actions">
-            <button className="action-btn bell-btn" onClick={() => setActivePanel(activePanel === 'notif' ? null : 'notif')}><Bell size={20} /></button>
+            <button className="action-btn bell-btn" onClick={() => setActivePanel(activePanel === 'notif' ? null : 'notif')}>
+              <Bell size={20} />
+              {notifications.length > 0 && <span className="notif-badge"></span>}
+            </button>
             <div className="user-profile" onClick={() => setActivePanel(activePanel === 'user' ? null : 'user')}>
               <span>J. Bermudez</span>
               <div className="avatar"><User size={20} color="white" /></div>
