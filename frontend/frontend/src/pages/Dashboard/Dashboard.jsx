@@ -94,12 +94,15 @@ const Dashboard = () => {
         <div className="content-container">
           {activeTab === 'routes' && (
             <div className="side-panel">
-              <div className="panel-header"><h4>Rutas disponibles</h4><button className="nav-item" onClick={() => setActiveTab('map')} style={{ width: 'auto' }}><X size={18} /></button></div>
+              <div className="panel-header">
+                <h4>Rutas Metrolínea</h4>
+                <button className="close-btn" onClick={() => setActiveTab('map')}><X size={18} /></button>
+              </div>
               <div className="route-list">
                 {routes.map(r => (
                   <div key={r.id} className="route-item" onClick={() => setSelectedRoute(r)}>
                     <div className="route-indicator" style={{ background: r.color }}></div>
-                    <div><strong>{r.name}</strong><p>{r.price}</p></div>
+                    <div><strong>{r.name}</strong><p style={{ margin: '4px 0 0', fontSize: '12px', color: 'var(--text-muted)' }}>{r.price} - {r.seats} cupos</p></div>
                   </div>
                 ))}
               </div>
@@ -118,7 +121,10 @@ const Dashboard = () => {
           <AnimatePresence>
             {selectedRoute && (
               <motion.div initial={{ y: 50, opacity: 0 }} animate={{ y: 0, opacity: 1 }} exit={{ y: 50, opacity: 0 }} className="route-detail-panel">
-                <div className="detail-header"><h3>{selectedRoute.name}</h3><button className="nav-item" onClick={() => setSelectedRoute(null)} style={{ width: 'auto' }}><X size={18} /></button></div>
+                <div className="detail-header">
+                  <h3>{selectedRoute.name}</h3>
+                  <button className="close-btn" onClick={() => setSelectedRoute(null)}><X size={18} /></button>
+                </div>
                 <div className="detail-stats">
                   <div className="stat"><span>Precio</span><strong>{selectedRoute.price}</strong></div>
                   <div className="stat"><span>Cupos</span><strong>{selectedRoute.seats}</strong></div>
