@@ -35,67 +35,75 @@ body, html { margin: 0; padding: 0; font-family: 'Inter', sans-serif; background
 /* MAIN CONTENT */
 .main-content { flex: 1; display: flex; flex-direction: column; min-width: 0; background: #020617; position: relative; }
 
-/* HEADER */
-.top-header { height: 70px; display: flex; align-items: center; justify-content: space-between; padding: 0 24px; border-bottom: 1px solid var(--border); }
+/* HEADER REFINADO */
+.top-header {
+  height: 70px; display: flex; align-items: center; justify-content: space-between;
+  padding: 0 24px; border-bottom: 1px solid var(--border); background: #0f172a;
+}
+.header-left { display: flex; align-items: center; gap: 15px; flex: 1; }
+
+.search-bar { position: relative; width: 100%; max-width: 400px; display: flex; align-items: center; }
+.search-bar input {
+  width: 100%; height: 42px; background: rgba(255,255,255,0.05); border: 1px solid var(--border);
+  border-radius: 12px; padding-left: 45px; color: white; outline: none; transition: 0.3s;
+}
+.search-bar input:focus { border-color: var(--primary); background: rgba(255,255,255,0.08); }
+.search-icon { position: absolute; left: 15px; color: var(--text-muted); } /* CENTRADO VERTICAL */
+
 .user-actions { display: flex; align-items: center; gap: 15px; position: relative; }
-
-.action-btn { background: rgba(255,255,255,0.05); border: 1px solid var(--border); color: white; padding: 10px; border-radius: 12px; cursor: pointer; }
-
-/* DROPDOWN PANEL */
-.dropdown-panel {
-  position: absolute; top: 60px; right: 0; width: 300px; background: #1e293b;
-  border: 1px solid var(--border); border-radius: 16px; padding: 20px; z-index: 5000;
-  box-shadow: 0 20px 50px rgba(0,0,0,0.8);
+.action-btn {
+  background: rgba(255,255,255,0.05); border: 1px solid var(--border); color: white;
+  padding: 10px; border-radius: 12px; cursor: pointer; transition: 0.3s;
 }
 
-/* SIDE PANEL (LISTA DE RUTAS) */
+.user-profile {
+  display: flex; align-items: center; gap: 12px; padding: 6px 12px;
+  background: rgba(255,255,255,0.05); border-radius: 14px; border: 1px solid var(--border);
+  cursor: pointer; white-space: nowrap; flex-shrink: 0;
+}
+.user-profile span { font-weight: 600; font-size: 0.9rem; }
+.avatar { width: 32px; height: 32px; background: var(--primary); border-radius: 8px; display: flex; align-items: center; justify-content: center; }
+
+/* DROPDOWN PANELS */
+.dropdown-panel {
+  position: absolute; top: 65px; right: 0; width: 320px; background: #1e293b;
+  border: 1px solid var(--border); border-radius: 20px; padding: 20px; z-index: 5000;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.8); backdrop-filter: blur(15px);
+}
+.user-dropdown { width: 220px; }
+
+.notif-item {
+  padding: 15px; border-radius: 15px; margin-bottom: 10px;
+  background: rgba(255,255,255,0.03); border: 1px solid var(--border);
+}
+.notif-item.alert { border-left: 4px solid #ff4444; }
+.notif-item.info { border-left: 4px solid #007AFF; }
+
+/* SIDE PANEL */
 .content-container { flex: 1; display: flex; overflow: hidden; position: relative; }
 .side-panel {
   width: 340px; min-width: 340px; background: #0f172a; border-right: 1px solid var(--border);
-  padding: 24px; z-index: 500; overflow-y: auto; display: flex; flex-direction: column;
+  padding: 24px; z-index: 500; overflow-y: auto;
 }
 
-.panel-header {
-  display: flex; align-items: center; justify-content: space-between; /* LA X A LA DERECHA */
-  margin-bottom: 25px; width: 100%;
-}
-.panel-header h4 { margin: 0; font-size: 1.2rem; color: white; }
-
-.route-list { display: flex; flex-direction: column; gap: 15px; } /* MÁS ESPACIO ENTRE RUTAS */
 .route-item {
   display: flex; align-items: center; gap: 15px; padding: 15px;
   background: rgba(255, 255, 255, 0.03); border: 1px solid var(--border);
-  border-radius: 14px; cursor: pointer; transition: 0.3s;
+  border-radius: 16px; cursor: pointer; transition: 0.3s; margin-bottom: 12px;
 }
-.route-item:hover { background: rgba(255, 255, 255, 0.07); transform: translateY(-2px); }
-.route-indicator { width: 12px; height: 12px; border-radius: 50%; flex-shrink: 0; }
+.route-item:hover { background: rgba(255, 255, 255, 0.08); transform: scale(1.02); }
 
-/* DETALLE DE RUTA FLOTANTE */
+/* AJUSTES */
+.settings-section label { display: flex; align-items: center; gap: 10px; font-weight: 600; margin-bottom: 10px; }
+.settings-section input[type="range"] { width: 100%; accent-color: var(--primary); margin: 10px 0; }
+
+/* RUTA DETALLE FLOTANTE */
 .route-detail-panel {
   position: absolute; bottom: 30px; left: 50%; transform: translateX(-50%);
-  width: 450px; padding: 24px; z-index: 1500; background: rgba(30, 41, 59, 0.85);
-  backdrop-filter: blur(12px); border-radius: 20px; border: 1px solid var(--border);
-  box-shadow: 0 20px 60px rgba(0,0,0,0.6);
+  width: 450px; padding: 24px; z-index: 1500; background: rgba(30, 41, 59, 0.9);
+  backdrop-filter: blur(15px); border-radius: 24px; border: 1px solid var(--border);
+  box-shadow: 0 30px 70px rgba(0,0,0,0.7);
 }
 
-.detail-header {
-  display: flex; align-items: center; justify-content: space-between; /* LA X A LA DERECHA */
-  margin-bottom: 20px; width: 100%;
-}
-.detail-header h3 { margin: 0; font-size: 1.3rem; color: white; }
-
-.detail-stats { display: flex; justify-content: space-around; gap: 12px; }
-.stat { background: rgba(255,255,255,0.05); padding: 12px; border-radius: 14px; flex: 1; text-align: center; }
-.stat span { font-size: 10px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; }
-.stat strong { display: block; color: var(--primary); font-size: 16px; margin-top: 5px; }
-
-/* MAPA */
-.map-wrapper { flex: 1; height: 100%; position: relative; z-index: 1; }
-.leaflet-map { width: 100%; height: 100%; }
-
-/* BOTÓN X CERRAR */
-.close-btn {
-  background: rgba(255,255,255,0.05); border: none; color: var(--text-muted);
-  padding: 8px; border-radius: 8px; cursor: pointer; display: flex; align-items: center; justify-content: center;
-}
-.close-btn:hover { background: rgba(255,255,255,0.1); color: white; }
+.close-btn { background: rgba(255,255,255,0.05); border: none; color: white; padding: 8px; border-radius: 10px; cursor: pointer; }
+.close-btn:hover { background: rgba(255,255,255,0.15); }
