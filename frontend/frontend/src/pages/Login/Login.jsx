@@ -9,16 +9,47 @@ const Login = () => {
   const [password, setPassword] = useState('');
   const navigate = useNavigate();
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    console.log('Iniciando sesión...', { email, password });
+  //const handleSubmit = (e) => {
+    //e.preventDefault();
+    //console.log('Iniciando sesión...', { email, password });
     
     // Simulación de éxito (Mock Data)
     // En el futuro aquí llamaremos al backend de Alfonso
-    if (email && password) {
+    //if (email && password) {
+      //navigate('/dashboard');
+    //}
+  //};
+const handleSubmit = async (e) => {
+  e.preventDefault();
+
+  try {
+    const response = await fetch('http://localhost:3000/login', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        email,
+        password
+      })
+    });
+
+    const data = await response.json();
+
+    console.log('Respuesta backend:', data);
+
+    if (data.success) {
+      alert('Login exitoso 🚀');
       navigate('/dashboard');
+    } else {
+      alert('Credenciales incorrectas');
     }
-  };
+
+  } catch (error) {
+    console.error(error);
+    alert('Error conectando con el backend');
+  }
+};
 
   return (
     <div className="login-container">

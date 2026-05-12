@@ -82,11 +82,41 @@ const Dashboard = () => {
     }
   };
 
-  const routes = [
-    { id: 1, name: 'P3 - Autopista', color: '#00A859', price: '$2.800', seats: 12, coords: [[7.11, -73.12], [7.115, -73.125], [7.125, -73.135]] },
-    { id: 2, name: 'P8 - Piedecuesta', color: '#FFD100', price: '$3.000', seats: 5, coords: [[7.10, -73.11], [7.05, -73.10], [7.00, -73.09]] },
-    { id: 3, name: 'RE1 - Universidades', color: '#007AFF', price: '$2.800', seats: 20, coords: [[7.13, -73.12], [7.14, -73.13]] }
-  ];
+  //const routes = [
+ //   { id: 1, name: 'P3 - Autopista', color: '#00A859', price: '$2.800', seats: 12, coords: [[7.11, -73.12], [7.115, -73.125], [7.125, -73.135]] },
+ //   { id: 2, name: 'P8 - Piedecuesta', color: '#FFD100', price: '$3.000', seats: 5, coords: [[7.10, -73.11], [7.05, -73.10], [7.00, -73.09]] },
+  //  { id: 3, name: 'RE1 - Universidades', color: '#007AFF', price: '$2.800', seats: 20, coords: [[7.13, -73.12], [7.14, -73.13]] }
+  //];
+
+const [routes, setRoutes] = useState([]);
+
+useEffect(() => {
+  const fetchRoutes = async () => {
+    try {
+      const response = await fetch('http://localhost:3000/api/rutas');
+      const data = await response.json();
+
+      const formattedRoutes = data.map((route, index) => ({
+        id: route.id,
+        name: route.nombre,
+        color: ['#00A859', '#FFD100', '#007AFF'][index % 3],
+        price: `$${route.precio}`,
+        seats: Math.floor(Math.random() * 20) + 1,
+        coords: [
+          [7.11 + index * 0.01, -73.12],
+          [7.12 + index * 0.01, -73.13]
+        ]
+      }));
+
+      setRoutes(formattedRoutes);
+
+    } catch (error) {
+      console.error('Error cargando rutas:', error);
+    }
+  };
+
+  fetchRoutes();
+}, []);
 
   const filteredRoutes = routes.filter(r => r.name.toLowerCase().includes(searchQuery.toLowerCase()));
 
